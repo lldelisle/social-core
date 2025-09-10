@@ -58,7 +58,7 @@ class OpenIdConnectAuth(BaseOAuth2):
     REDIRECT_STATE = False
     REVOKE_TOKEN_METHOD = "GET"
     ID_KEY = "sub"
-    USERNAME_KEY = "preferred_username"
+    USERNAME_KEY = "winaccountname"
     JWT_ALGORITHMS = ["RS256"]
     JWT_DECODE_OPTIONS: dict[str, Any] = {}
     JWT_LEEWAY: float = 1.0  # seconds
