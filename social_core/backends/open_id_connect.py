@@ -318,6 +318,9 @@ class OpenIdConnectAuth(BaseOAuth2):
         except PyJWTError:
             raise AuthTokenError(self, "Invalid signature")
 
+        if claims.get('isMemberOf', None) != "GL_HPC_Galaxy_Users":
+            raise AuthTokenError(self, "Token error: Not part of the group")
+
         # pyjwt does not validate OIDC claims
         # see https://github.com/jpadilla/pyjwt/pull/296
         if not self.validate_at_hash(claims, access_token, key):
