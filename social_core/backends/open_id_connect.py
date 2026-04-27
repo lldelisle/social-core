@@ -67,6 +67,7 @@ class OpenIdConnectAuth(BaseOAuth2):
     REVOKE_TOKEN_METHOD = "GET"
     ID_KEY = "sub"
     USERNAME_KEY = "winaccountname"
+    EMAIL_PATTERN = "unige.ch"
     JWT_ALGORITHMS = ["RS256"]
     JWT_DECODE_OPTIONS: dict[str, Any] = {}
     JWT_LEEWAY: float = 1.0  # seconds
@@ -366,9 +367,21 @@ class OpenIdConnectAuth(BaseOAuth2):
                 return self.id_token.get(key)
             return None
 
+        def get_single_email():
+            email = get_value("email")
+            if isinstance(email, list):
+                for cur_email in email:
+                    if self.EMAIL_PATTERN in cur_email:
+                        return cur_email
+                raise AuthMissingParameter(
+                    self, f"None of the emails contains {self.EMAIL_PATTERN}"
+                )
+            else:
+                return email
+
         return {
             "username": get_value(username_key),
-            "email": get_value("email"),
+            "email": get_single_email(),
             "fullname": get_value("name"),
             "first_name": get_value("given_name"),
             "last_name": get_value("family_name"),
