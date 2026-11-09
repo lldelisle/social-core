@@ -373,9 +373,7 @@ class OpenIdConnectAuth(BaseOAuth2):
                 for cur_email in email:
                     if self.EMAIL_PATTERN in cur_email:
                         return cur_email
-                raise AuthMissingParameter(
-                    self, f"None of the emails contains {self.EMAIL_PATTERN}"
-                )
+                return email[0]
             else:
                 return email
 
