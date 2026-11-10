@@ -66,7 +66,7 @@ class OpenIdConnectAuth(BaseOAuth2):
     REDIRECT_STATE = False
     REVOKE_TOKEN_METHOD = "GET"
     ID_KEY = "sub"
-    USERNAME_KEY = "winaccountname"
+    USERNAME_KEY = "unigeChUniqueUid"
     EMAIL_PATTERN = "unige.ch"
     JWT_ALGORITHMS = ["RS256"]
     JWT_DECODE_OPTIONS: dict[str, Any] = {}
@@ -376,9 +376,14 @@ class OpenIdConnectAuth(BaseOAuth2):
                 return email[0]
             else:
                 return email
+        
+        username = get_value(username_key)
+
+        if username is None:
+            raise AuthTokenError(self, "Token error: having a username is mandatory")
 
         return {
-            "username": get_value(username_key),
+            "username": username,
             "email": get_single_email(),
             "fullname": get_value("name"),
             "first_name": get_value("given_name"),
